@@ -1,31 +1,24 @@
-package com.cabin.example.entity;
-
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
+package com.cabin.example.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class BookResponseDTO {
     private Long id;
     private String title;
     private BigDecimal price;
-    @CreationTimestamp
     private LocalDate publishDate;
-    @CreationTimestamp
     private LocalDateTime createdAt;
 
-    private Boolean isDeleted = false;
-
-    // for JPA only, no use
-    public Book() {
+    public BookResponseDTO(Long id, String title, BigDecimal price, LocalDate publishDate, LocalDateTime createdAt) {
+        this.id = id;
+        this.title = title;
+        this.price = price;
+        this.publishDate = publishDate;
+        this.createdAt = createdAt;
     }
 
-    // getters, setters and constructor
     public Long getId() {
         return id;
     }
@@ -64,13 +57,5 @@ public class Book {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
     }
 }
