@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-public class BookRequestDTO {
+public class BookCreateDTO {
     @NotBlank
     private String title;
 
