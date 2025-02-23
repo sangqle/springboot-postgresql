@@ -1,5 +1,6 @@
 package com.cabin.example.controller;
 
+import com.cabin.example.api.ApiResponse;
 import com.cabin.example.dto.BookCreateDTO;
 import com.cabin.example.dto.BookResponseDTO;
 import com.cabin.example.dto.BookUpdateDTO;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -24,8 +26,8 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
-    public List<BookResponseDTO> findAll(@RequestParam(name = "page", defaultValue = "1", required = false) Integer page, @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
-        return bookService.findByIsDeletedFalse(PageRequest.of((page > 0) ? page - 1 : 0, size)).getContent();
+    public ResponseEntity<ApiResponse<List<BookResponseDTO>>> findAll(@RequestParam(name = "page", defaultValue = "1", required = false) Integer page, @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
+        return ResponseEntity.ok(ApiResponse.success(bookService.findByIsDeletedFalse(PageRequest.of((page > 0) ? page - 1 : 0, size)).getContent()));
     }
 
     @GetMapping("/{id}")
