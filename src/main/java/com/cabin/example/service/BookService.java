@@ -1,5 +1,6 @@
 package com.cabin.example.service;
 
+import com.cabin.example.api.PageResponse;
 import com.cabin.example.dto.BookCreateDTO;
 import com.cabin.example.dto.BookResponseDTO;
 import com.cabin.example.dto.BookUpdateDTO;
@@ -46,9 +47,16 @@ public class BookService {
         return bookRepository.findByPublishedDateAfter(date);
     }
 
-    public Page<BookResponseDTO> findByIsDeletedFalse(Pageable pageable) {
-        Page<Book> byIsDeletedFalse = bookRepository.findByIsDeletedFalse(pageable);
-        return byIsDeletedFalse.map(book -> new BookResponseDTO(book.getId(), book.getTitle(), book.getPrice(), book.getPublishDate(), book.getCreatedAt()));
+    public PageResponse<BookResponseDTO> findByIsDeletedFalse(Pageable pageable) {
+        Page<Book> page = bookRepository.findByIsDeletedFalse(pageable);
+        Page<BookResponseDTO> dtoPage = page.map(book -> new BookResponseDTO(
+                book.getId(),
+                book.getTitle(),
+                book.getPrice(),
+                book.getPublishDate(),
+                book.getCreatedAt()
+        ));
+        return PageResponse.fromPage(dtoPage);
     }
 
     @Transactional

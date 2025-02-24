@@ -1,6 +1,7 @@
 package com.cabin.example.controller;
 
 import com.cabin.example.api.ApiResponse;
+import com.cabin.example.api.PageResponse;
 import com.cabin.example.dto.BookCreateDTO;
 import com.cabin.example.dto.BookResponseDTO;
 import com.cabin.example.dto.BookUpdateDTO;
@@ -26,8 +27,10 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<BookResponseDTO>>> findAll(@RequestParam(name = "page", defaultValue = "1", required = false) Integer page, @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
-        return ResponseEntity.ok(ApiResponse.success(bookService.findByIsDeletedFalse(PageRequest.of((page > 0) ? page - 1 : 0, size)).getContent()));
+    public ResponseEntity<ApiResponse<PageResponse<BookResponseDTO>>> findAll(@RequestParam(name = "page", defaultValue = "0", required = false) Integer page, @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
+
+        PageResponse<BookResponseDTO> byIsDeletedFalse = bookService.findByIsDeletedFalse(PageRequest.of(page, size));
+        return ResponseEntity.ok(ApiResponse.success(byIsDeletedFalse));
     }
 
     @GetMapping("/{id}")
