@@ -7,6 +7,8 @@ import com.cabin.example.dto.BookUpdateDTO;
 import com.cabin.example.entity.Book;
 import com.cabin.example.repository.BookRepository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,8 @@ import java.util.Optional;
 
 @Service
 public class BookService {
+    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
+
 
     @Autowired
     private BookRepository bookRepository;
@@ -49,20 +53,16 @@ public class BookService {
 
     public PageResponse<BookResponseDTO> findByIsDeletedFalse(Pageable pageable) {
         Page<Book> page = bookRepository.findByIsDeletedFalse(pageable);
-        Page<BookResponseDTO> dtoPage = page.map(book -> new BookResponseDTO(
-                book.getId(),
-                book.getTitle(),
-                book.getPrice(),
-                book.getPublishDate(),
-                book.getCreatedAt()
-        ));
+        Page<BookResponseDTO> dtoPage = page.map(book -> new BookResponseDTO(book.getId(), book.getTitle(), book.getPrice(), book.getPublishDate(), book.getCreatedAt()));
         return PageResponse.fromPage(dtoPage);
     }
 
     @Transactional
     public BookResponseDTO updateBook(Long id, BookUpdateDTO bookUpdateDTO) throws Exception {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new Exception("Book not found with id: " + id));
+        Book book = bookRepository.findById(id).orElseThrow(() -> {
+            logger.error("Book with id {} not found", id);
+            return new Exception("Book not found with id: " + id);
+        });
 
         // Update only the fields that are allowed to change
         if (bookUpdateDTO.getTitle() != null) {
@@ -76,12 +76,6 @@ public class BookService {
         // However, calling save() is fine if you want to be explicit.
         Book updatedBook = bookRepository.save(book);
 
-        return new BookResponseDTO(
-                updatedBook.getId(),
-                updatedBook.getTitle(),
-                updatedBook.getPrice(),
-                updatedBook.getPublishDate(),
-                updatedBook.getCreatedAt()
-        );
+        return new BookResponseDTO(updatedBook.getId(), updatedBook.getTitle(), updatedBook.getPrice(), updatedBook.getPublishDate(), updatedBook.getCreatedAt());
     }
 }

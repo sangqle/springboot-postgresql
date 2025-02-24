@@ -28,7 +28,6 @@ public class BookController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<BookResponseDTO>>> findAll(@RequestParam(name = "page", defaultValue = "0", required = false) Integer page, @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
-
         PageResponse<BookResponseDTO> byIsDeletedFalse = bookService.findByIsDeletedFalse(PageRequest.of(page, size));
         return ResponseEntity.ok(ApiResponse.success(byIsDeletedFalse));
     }
